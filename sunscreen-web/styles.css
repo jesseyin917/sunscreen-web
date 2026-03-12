@@ -1,0 +1,151 @@
+:root {
+  --bg-1: #fff7ed;
+  --bg-2: #fef3c7;
+  --text: #1f2937;
+  --muted: #5b6472;
+  --panel: rgba(255, 255, 255, 0.72);
+  --border: rgba(255, 255, 255, 0.65);
+  --shadow: 0 20px 50px rgba(251, 146, 60, 0.16);
+  --green: #16a34a;
+  --yellow: #d97706;
+  --orange: #ea580c;
+  --red: #dc2626;
+  --purple: #7c3aed;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top left, #fde68a 0%, #fed7aa 30%, #fffbeb 60%, #fff 100%);
+}
+
+.app-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+.hero, .panel-heading, .uv-grid, .chart-grid, .clothing-layout {
+  display: grid;
+  gap: 20px;
+}
+
+.hero {
+  grid-template-columns: 1.6fr 1fr;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  font-size: clamp(2.4rem, 4vw, 4.6rem);
+  line-height: 0.95;
+  margin: 8px 0 16px;
+  letter-spacing: -0.05em;
+}
+
+.hero-copy, .panel-heading p, .chart-copy p, .tips-list, .dataset-note, .location-text, .alert-text, .info-card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.glass {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.hero-card, .panel, .chart-card, .outfit-card, .tips-card, .uv-status-card, .info-card {
+  border-radius: 24px;
+}
+
+.hero-card, .panel { padding: 24px; }
+.hero-card ul, .outfit-list, .tips-list { margin: 12px 0 0; padding-left: 18px; }
+.eyebrow, .section-tag, .mini-label {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.eyebrow, .section-tag { color: #c2410c; }
+.mini-label { color: #92400e; }
+
+.panel { margin-top: 24px; }
+.panel-heading { grid-template-columns: 1fr auto; align-items: start; }
+.primary-btn {
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f97316, #fb7185);
+  color: white;
+  font-weight: 700;
+  padding: 14px 18px;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(249, 115, 22, 0.25);
+}
+
+.uv-grid { grid-template-columns: 1.3fr 1fr; margin-top: 20px; }
+.uv-status-card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.9), rgba(255,237,213,0.85));
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,0.8);
+}
+.uv-value-row {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+  margin: 12px 0 10px;
+}
+.uv-value {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 800;
+  line-height: 1;
+}
+.uv-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.uv-badge.low { background: rgba(22, 163, 74, 0.15); color: var(--green); }
+.uv-badge.moderate { background: rgba(217, 119, 6, 0.15); color: var(--yellow); }
+.uv-badge.high { background: rgba(234, 88, 12, 0.15); color: var(--orange); }
+.uv-badge.very-high { background: rgba(220, 38, 38, 0.15); color: var(--red); }
+.uv-badge.extreme { background: rgba(124, 58, 237, 0.15); color: var(--purple); }
+.uv-badge.neutral { background: rgba(100,116,139,0.15); color: #475569; }
+
+.info-stack { display: grid; gap: 16px; }
+.info-card {
+  background: rgba(255,255,255,0.7);
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.75);
+}
+
+.chart-grid, .clothing-layout { grid-template-columns: 1fr 1fr; margin-top: 20px; }
+.chart-card, .outfit-card, .tips-card {
+  background: rgba(255,255,255,0.7);
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.75);
+}
+.chart-copy h3, .outfit-card h3, .tips-card h3 { margin: 0 0 8px; }
+canvas {
+  width: 100%;
+  background: linear-gradient(180deg, rgba(255,247,237,0.6), rgba(255,255,255,0.2));
+  border-radius: 18px;
+  margin-top: 14px;
+}
+.dataset-note {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.55);
+  border-radius: 16px;
+}
+.outfit-list li, .tips-list li { margin-bottom: 10px; }
+
+@media (max-width: 900px) {
+  .hero, .panel-heading, .uv-grid, .chart-grid, .clothing-layout {
+    grid-template-columns: 1fr;
+  }
+  .primary-btn { width: 100%; }
+}

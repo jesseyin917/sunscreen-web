@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SunSmart AU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">SunSmart AU</p>
+          <h1>Know the UV. Understand the risk. Dress smarter.</h1>
+          <p class="hero-copy">
+            A youth-focused sunscreen awareness webpage for Australia: real-time local UV alerts,
+            visual evidence of skin cancer impact and heat trends, and practical clothing guidance.
+          </p>
+        </div>
+        <div class="hero-card glass">
+          <p class="mini-label">Project goals</p>
+          <ul>
+            <li>Real-time UV alert by location</li>
+            <li>Visualise why sun protection matters</li>
+            <li>Recommend what to wear for current conditions</li>
+          </ul>
+        </div>
+      </header>
+
+      <main>
+        <section class="panel glass" id="uv-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-tag">US1.1</p>
+              <h2>Real-time, localised UV alert</h2>
+              <p>Turns the UV index into plain-English guidance instead of just showing a number.</p>
+            </div>
+            <button id="locateBtn" class="primary-btn">Use my location</button>
+          </div>
+
+          <div class="uv-grid">
+            <div class="uv-status-card">
+              <div class="uv-value-wrap">
+                <span class="mini-label">Current UV</span>
+                <div class="uv-value-row">
+                  <span id="uvValue" class="uv-value">--</span>
+                  <span id="uvBadge" class="uv-badge neutral">Waiting</span>
+                </div>
+              </div>
+              <p id="uvLocation" class="location-text">Location not loaded yet</p>
+              <p id="uvAlert" class="alert-text">Tap “Use my location” to fetch live UV and get a human-language warning.</p>
+            </div>
+
+            <div class="info-stack">
+              <div class="info-card">
+                <span class="mini-label">Protection window</span>
+                <p id="exposureText">Estimated safe exposure time will appear here.</p>
+              </div>
+              <div class="info-card">
+                <span class="mini-label">Right now</span>
+                <p id="actionText">We’ll suggest immediate next actions once the UV data loads.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel glass" id="insights-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-tag">US2.1</p>
+              <h2>Why this matters in Australia</h2>
+              <p>Two lightweight visualisations to raise awareness instead of just giving instructions.</p>
+            </div>
+          </div>
+
+          <div class="chart-grid">
+            <article class="chart-card">
+              <div class="chart-copy">
+                <h3>Skin cancer burden over time</h3>
+                <p>
+                  Illustrates the scale of skin cancer impact in Australia. Use this to explain the long-term consequences of UV exposure.
+                </p>
+              </div>
+              <canvas id="cancerChart" height="240"></canvas>
+            </article>
+
+            <article class="chart-card">
+              <div class="chart-copy">
+                <h3>Australian heat trend</h3>
+                <p>
+                  Hotter years often mean more outdoor exposure and stronger sun-safety pressure. This graph frames the issue in a climate context.
+                </p>
+              </div>
+              <canvas id="heatChart" height="240"></canvas>
+            </article>
+          </div>
+
+          <div class="dataset-note">
+            <strong>Dataset references used for design direction:</strong> Australian cancer incidence / mortality datasets,
+            Australian UV-related data sources, and behaviour survey references from your attachment.
+          </div>
+        </section>
+
+        <section class="panel glass" id="clothing-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-tag">US3.3</p>
+              <h2>What should I wear?</h2>
+              <p>Clothing recommendations adapt to the current UV level so the advice feels useful, not generic.</p>
+            </div>
+          </div>
+
+          <div class="clothing-layout">
+            <div class="outfit-card">
+              <h3 id="outfitTitle">Everyday sun-smart outfit</h3>
+              <ul id="outfitList" class="outfit-list"></ul>
+            </div>
+            <div class="tips-card">
+              <h3>Quick rules</h3>
+              <ul class="tips-list">
+                <li>UPF-rated or tightly woven fabrics block more UV than thin cotton.</li>
+                <li>Long sleeves help, but colour, weave, and fit matter too.</li>
+                <li>A hat that shades the face, ears, and neck is much better than a cap.</li>
+                <li>Sunglasses and sunscreen should complement clothing, not replace it.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
