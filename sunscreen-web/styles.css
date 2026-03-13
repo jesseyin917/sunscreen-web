@@ -141,7 +141,11 @@ canvas {
   background: rgba(255,255,255,0.55);
   border-radius: 16px;
 }
-.outfit-list li, .tips-list li { margin-bottom: 10px; }
+#sourceList {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+#sourceList li, .outfit-list li, .tips-list li { margin-bottom: 10px; }
 
 @media (max-width: 900px) {
   .hero, .panel-heading, .uv-grid, .chart-grid, .clothing-layout {
