@@ -85,26 +85,46 @@ const API_BASE = CONFIG_API_BASE || (
     : ''
 );
 
-async function fetchUv(lat, lon, label) {
+async function fetchUvByCoords(lat, lon, label) {
   const url = `${API_BASE}/api/uv/current?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}${label ? `&label=${encodeURIComponent(label)}` : ''}`;
   const res = await fetch(url);
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Failed to fetch UV data from backend API: ${errText}`);
-  }
-  const data = await res.json();
-  return data.uvIndex ?? 0;
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async function fetchUvByQuery(query) {
+  const url = `${API_BASE}/api/uv/current?q=${encodeURIComponent(query)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
 }
 
 async function loadUvFor(lat, lon, label) {
   $('uvAlert').textContent = 'Fetching live UV data…';
-  const uv = await fetchUv(lat, lon, label);
-  renderUvCard(uv, label || `Live reading near ${lat.toFixed(2)}, ${lon.toFixed(2)}`);
+  const data = await fetchUvByCoords(lat, lon, label);
+  renderUvCard(data.uvIndex ?? 0, data.location || label);
+}
+
+async function searchUv() {
+  const input = $('locationInput');
+  const query = input.value.trim();
+  if (!query) {
+    $('uvAlert').textContent = 'Enter an Australian suburb or postcode first.';
+    return;
+  }
+  $('uvAlert').textContent = 'Searching suburb/postcode…';
+  try {
+    const data = await fetchUvByQuery(query);
+    renderUvCard(data.uvIndex ?? 0, data.location || query);
+  } catch (error) {
+    $('uvAlert').textContent = 'Could not find UV data for that suburb or postcode.';
+    console.error(error);
+  }
 }
 
 async function useMyLocation() {
   if (!navigator.geolocation) {
-    $('uvAlert').textContent = 'Geolocation is not supported in this browser. Use Chrome or Edge for the live demo.';
+    $('uvAlert').textContent = 'Geolocation is not supported in this browser. Use the suburb/postcode search instead.';
     return;
   }
 
@@ -113,16 +133,11 @@ async function useMyLocation() {
       const { latitude, longitude } = position.coords;
       await loadUvFor(latitude, longitude, `Your location (${latitude.toFixed(2)}, ${longitude.toFixed(2)})`);
     } catch (error) {
-      $('uvAlert').textContent = 'Could not load live UV right now. Make sure the FastAPI backend is running and the API key is configured on the server.';
+      $('uvAlert').textContent = 'Could not load live UV right now. Try suburb/postcode search instead.';
       console.error(error);
     }
   }, async () => {
-    $('uvAlert').textContent = 'Location access was denied. Melbourne demo data is loaded instead.';
-    try {
-      await loadUvFor(-37.8136, 144.9631, 'Melbourne default');
-    } catch (error) {
-      console.error(error);
-    }
+    $('uvAlert').textContent = 'Location access was denied. Try suburb/postcode search instead.';
   });
 }
 
@@ -248,13 +263,14 @@ function renderSources() {
 function bindEvents() {
   if (state.listenersBound) return;
   $('locateBtn').addEventListener('click', useMyLocation);
-  document.querySelectorAll('.city-btn').forEach((btn) => {
+  $('searchBtn').addEventListener('click', searchUv);
+  $('locationInput').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') searchUv();
+  });
+  document.querySelectorAll('.query-btn').forEach((btn) => {
     btn.addEventListener('click', async () => {
-      try {
-        await loadUvFor(Number(btn.dataset.lat), Number(btn.dataset.lon), btn.dataset.label);
-      } catch (error) {
-        console.error(error);
-      }
+      $('locationInput').value = btn.dataset.query || '';
+      await searchUv();
     });
   });
   state.listenersBound = true;
@@ -272,7 +288,8 @@ window.addEventListener('resize', boot);
 window.addEventListener('DOMContentLoaded', async () => {
   boot();
   try {
-    await loadUvFor(-37.8136, 144.9631, 'Melbourne default');
+    const data = await fetchUvByQuery('Melbourne');
+    renderUvCard(data.uvIndex ?? 0, data.location || 'Melbourne');
   } catch (error) {
     console.error(error);
   }
