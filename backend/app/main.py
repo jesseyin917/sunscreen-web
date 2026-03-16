@@ -7,8 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="SunSmart AU Backend",
-    version="0.4.0",
-    description="FastAPI backend for UV retrieval, suburb/postcode lookup, and dynamic clothing recommendations.",
+    version="0.4.1",
+    description="FastAPI backend for UV retrieval, Australian suburb/postcode lookup, and dynamic clothing recommendations.",
 )
 
 app.add_middleware(
@@ -171,16 +171,18 @@ def health_check():
 
 @app.get("/api/location/search")
 async def search_location(q: str = Query(..., description="Australian suburb or postcode")):
-    url = "https://geocoding-api.open-meteo.com/v1/search"
+    url = "https://nominatim.openstreetmap.org/search"
     params = {
-        "name": q,
-        "count": 5,
-        "language": "en",
-        "format": "json",
+        "q": q,
+        "countrycodes": "au",
+        "format": "jsonv2",
+        "addressdetails": 1,
+        "limit": 5,
     }
+    headers = {"User-Agent": "SunSmartAU/1.0 (student project)"}
 
     try:
-        async with httpx.AsyncClient(timeout=20.0) as client:
+        async with httpx.AsyncClient(timeout=20.0, headers=headers) as client:
             response = await client.get(url, params=params)
             data = response.json()
     except Exception as exc:
@@ -189,27 +191,34 @@ async def search_location(q: str = Query(..., description="Australian suburb or 
     if response.status_code >= 400:
         raise HTTPException(status_code=response.status_code, detail=data)
 
-    results = data.get("results") or []
+    results = data or []
     if not results:
-        raise HTTPException(status_code=404, detail="No matching suburb or postcode found")
+        raise HTTPException(status_code=404, detail="No matching Australian suburb or postcode found")
 
-    australian = [
-        item for item in results
-        if (item.get("country_code") or "").upper() == "AU"
-    ]
-    chosen = (australian or results)[0]
+    chosen = results[0]
+    address = chosen.get("address", {})
+    name = address.get("suburb") or address.get("city") or address.get("town") or address.get("village") or q
+    admin1 = address.get("state")
+    postcode = address.get("postcode")
+    country = address.get("country", "Australia")
+
+    display_parts = [name]
+    if admin1:
+        display_parts.append(admin1)
+    if postcode and postcode != str(q):
+        display_parts.append(postcode)
+    display_parts.append(country)
 
     return {
         "query": q,
-        "name": chosen.get("name"),
-        "admin1": chosen.get("admin1"),
-        "country": chosen.get("country"),
-        "country_code": chosen.get("country_code"),
-        "lat": chosen.get("latitude"),
-        "lon": chosen.get("longitude"),
-        "displayName": ", ".join(
-            part for part in [chosen.get("name"), chosen.get("admin1"), chosen.get("country")] if part
-        ),
+        "name": name,
+        "admin1": admin1,
+        "country": country,
+        "country_code": address.get("country_code", "au").upper(),
+        "postcode": postcode,
+        "lat": float(chosen.get("lat")),
+        "lon": float(chosen.get("lon")),
+        "displayName": ", ".join(part for part in display_parts if part),
     }
 
 
