@@ -1,1 +1,45 @@
-# sunscreen-web
+# SunSmart AU
+
+Youth campaign style sunscreen-awareness web project with:
+
+- **US1.1** Real-time, localised UV alert via a **FastAPI backend**
+- **US2.1** Two visualisations using real Australian public datasets
+- **US3.3** UV-based clothing recommendations
+
+## Project structure
+
+- `index.html`, `app.js`, `styles.css`, `data.js` - frontend
+- `backend/` - FastAPI backend for secure API integration
+- `sunscreen-web/` - mirrored project folder version kept in repo
+
+## Backend setup
+
+```bash
+python3 -m venv backend/.venv
+source backend/.venv/bin/activate
+python -m pip install -r backend/requirements.txt
+export OPENWEATHER_API_KEY=your_key_here
+python -m uvicorn app.main:app --reload --app-dir backend
+```
+
+Backend endpoints:
+
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/health`
+- `http://127.0.0.1:8000/api/uv/current?lat=-37.8136&lon=144.9631&label=Melbourne`
+
+## Frontend setup
+
+```bash
+python3 -m http.server 8008
+```
+
+Then open:
+
+- `http://127.0.0.1:8008`
+
+## Data sources
+
+- Australian Cancer Incidence and Mortality (data.gov.au / AIHW)
+- 2021 SoE Climate Annual mean temperature anomaly Australia (1910 to 2020)
+- OpenWeather live UV via backend API

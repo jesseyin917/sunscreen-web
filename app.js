@@ -78,15 +78,19 @@ function renderUvCard(uv, locationLabel) {
   updateClothing(level.key);
 }
 
+const API_BASE = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+  ? 'http://127.0.0.1:8000'
+  : '';
+
 async function fetchUv(lat, lon, label) {
-  const url = `/api/uv?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}${label ? `&label=${encodeURIComponent(label)}` : ''}`;
+  const url = `${API_BASE}/api/uv/current?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}${label ? `&label=${encodeURIComponent(label)}` : ''}`;
   const res = await fetch(url);
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`Failed to fetch UV data from backend proxy: ${errText}`);
+    throw new Error(`Failed to fetch UV data from backend API: ${errText}`);
   }
   const data = await res.json();
-  return data.uvi ?? 0;
+  return data.uvIndex ?? 0;
 }
 
 async function loadUvFor(lat, lon, label) {
@@ -106,7 +110,7 @@ async function useMyLocation() {
       const { latitude, longitude } = position.coords;
       await loadUvFor(latitude, longitude, `Your location (${latitude.toFixed(2)}, ${longitude.toFixed(2)})`);
     } catch (error) {
-      $('uvAlert').textContent = 'Could not load live UV right now. If this is the GitHub Pages link, use the Vercel deployment because the secure backend proxy lives there.';
+      $('uvAlert').textContent = 'Could not load live UV right now. Make sure the FastAPI backend is running and the API key is configured on the server.';
       console.error(error);
     }
   }, async () => {
