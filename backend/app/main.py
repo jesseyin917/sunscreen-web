@@ -5,6 +5,8 @@ import httpx
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from .au_postcodes import _connect, ensure_postcodes_db, lookup_place
+
 app = FastAPI(
     title="SunSmart AU Backend",
     version="0.4.1",
@@ -24,6 +26,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Local AU postcode/suburb database (SQLite) to avoid wrong-country matches.
+_POSTCODES_CONN = _connect()
+try:
+    ensure_postcodes_db(_POSTCODES_CONN)
+except Exception as exc:
+    # Do not hard-fail boot; we can still fallback to Nominatim.
+    print(f"WARNING: postcode DB not initialised ({exc}); will fallback to Nominatim only")
 
 
 def uv_risk_label(uvi: float) -> str:
@@ -171,6 +182,28 @@ def health_check():
 
 @app.get("/api/location/search")
 async def search_location(q: str = Query(..., description="Australian suburb or postcode")):
+    # 1) First try local AU dataset (SQLite)
+    try:
+        place = lookup_place(_POSTCODES_CONN, q)
+    except Exception as exc:
+        place = None
+        print(f"WARNING: postcode DB lookup failed ({exc}); fallback to Nominatim")
+
+    if place:
+        return {
+            "query": q,
+            "name": place.suburb,
+            "admin1": place.state,
+            "country": "Australia",
+            "country_code": "AU",
+            "postcode": place.postcode,
+            "lat": float(place.lat),
+            "lon": float(place.lon),
+            "displayName": place.display_name,
+            "source": "local_postcodes_geo",
+        }
+
+    # 2) Fallback to Nominatim (AU-only)
     url = "https://nominatim.openstreetmap.org/search"
     params = {
         "q": q,
@@ -219,6 +252,7 @@ async def search_location(q: str = Query(..., description="Australian suburb or 
         "lat": float(chosen.get("lat")),
         "lon": float(chosen.get("lon")),
         "displayName": ", ".join(part for part in display_parts if part),
+        "source": "nominatim_au",
     }
 
 
