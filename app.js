@@ -78,9 +78,12 @@ function renderUvCard(uv, locationLabel) {
   updateClothing(level.key);
 }
 
-const API_BASE = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-  ? 'http://127.0.0.1:8000'
-  : '';
+const CONFIG_API_BASE = window.APP_CONFIG?.apiBase?.trim?.() || '';
+const API_BASE = CONFIG_API_BASE || (
+  window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+    ? 'http://127.0.0.1:8000'
+    : ''
+);
 
 async function fetchUv(lat, lon, label) {
   const url = `${API_BASE}/api/uv/current?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}${label ? `&label=${encodeURIComponent(label)}` : ''}`;

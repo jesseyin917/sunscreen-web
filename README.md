@@ -37,6 +37,24 @@ Then open:
 
 - `http://127.0.0.1:8008`
 
+## Public deployment
+
+### Backend (Render)
+
+This repo includes `render.yaml` for the FastAPI backend. Deploy the backend first and copy the public backend URL.
+
+### Frontend
+
+Set `config.js`:
+
+```js
+window.APP_CONFIG = {
+  apiBase: 'https://your-backend-url.onrender.com'
+};
+```
+
+Then deploy the frontend statically (GitHub Pages / Netlify / Vercel static hosting).
+
 ## Data sources
 
 - Australian Cancer Incidence and Mortality (data.gov.au / AIHW)
