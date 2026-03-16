@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
-"""Very small Markdown -> PDF converter for course reports.
+"""Lightweight Markdown -> PDF converter for course reports.
 
-Supports:
-- # / ## / ### headings
-- bullet lists starting with '-' or '*'
-- fenced code blocks (rendered monospaced)
+Goal: readable PDF without external tooling (pandoc). We support the subset used in
+our course templates:
 
-This avoids external tools like pandoc.
+- Headings: # .. ######
+- Paragraphs
+- Bullet lists: - / *
+- Blockquotes: lines starting with '>'
+- Fenced code blocks: ```
+- Inline formatting: **bold**, *italic*, `code`
+- Simple markdown tables: rendered as monospaced text blocks
+
+Implementation uses reportlab Paragraph (HTML-like markup).
 """
 
 from __future__ import annotations
@@ -21,19 +27,58 @@ from reportlab.lib.units import mm
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Preformatted
 
 
+def _escape_html(text: str) -> str:
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _inline_md_to_rl(text: str) -> str:
+    """Convert a small subset of inline markdown to reportlab Paragraph markup."""
+    s = _escape_html(text)
+
+    # code first (avoid messing with * inside code)
+    # Use a built-in mono font family that ReportLab can map.
+    s = re.sub(r"`([^`]+)`", r"<font face='Courier'>\1</font>", s)
+
+    # bold and italic
+    s = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", s)
+    # italic: single asterisks
+    s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", s)
+
+    return s
+
+
+def _looks_like_table_row(line: str) -> bool:
+    stripped = line.strip()
+    return stripped.startswith("|") and stripped.endswith("|") and stripped.count("|") >= 2
+
+
 def md_to_story(md: str):
     styles = getSampleStyleSheet()
 
-    h1 = ParagraphStyle("H1", parent=styles["Heading1"], spaceAfter=10)
-    h2 = ParagraphStyle("H2", parent=styles["Heading2"], spaceAfter=8)
-    h3 = ParagraphStyle("H3", parent=styles["Heading3"], spaceAfter=6)
+    # Headings
+    heading_styles = {
+        1: ParagraphStyle("H1", parent=styles["Heading1"], spaceAfter=10),
+        2: ParagraphStyle("H2", parent=styles["Heading2"], spaceAfter=8),
+        3: ParagraphStyle("H3", parent=styles["Heading3"], spaceAfter=6),
+        4: ParagraphStyle("H4", parent=styles["Heading4"], spaceAfter=6),
+        5: ParagraphStyle("H5", parent=styles["Heading5"], spaceAfter=4),
+        6: ParagraphStyle("H6", parent=styles["Heading6"], spaceAfter=4),
+    }
+
     body = ParagraphStyle("Body", parent=styles["BodyText"], leading=14, spaceAfter=4)
     bullet = ParagraphStyle("Bullet", parent=body, leftIndent=14, bulletIndent=6)
+    quote = ParagraphStyle(
+        "Quote",
+        parent=body,
+        leftIndent=12,
+        textColor="#444444",
+        italic=True,
+    )
 
     story = []
 
     in_code = False
-    code_lines = []
+    code_lines: list[str] = []
 
     def flush_code():
         nonlocal code_lines
@@ -42,64 +87,77 @@ def md_to_story(md: str):
             story.append(Spacer(1, 4))
             code_lines = []
 
-    for raw in md.splitlines():
-        line = raw.rstrip("\n")
+    lines = md.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i].rstrip("\n")
 
+        # fenced code blocks
         if line.strip().startswith("```"):
             if in_code:
                 in_code = False
                 flush_code()
             else:
                 in_code = True
+            i += 1
             continue
 
         if in_code:
             code_lines.append(line)
+            i += 1
             continue
 
+        # blank line
         if not line.strip():
             story.append(Spacer(1, 4))
+            i += 1
+            continue
+
+        # markdown tables (very simple): consecutive |...| rows
+        if _looks_like_table_row(line):
+            table_block = [line]
+            j = i + 1
+            while j < len(lines) and _looks_like_table_row(lines[j]):
+                table_block.append(lines[j])
+                j += 1
+            story.append(Preformatted("\n".join(table_block), styles["Code"]))
+            story.append(Spacer(1, 6))
+            i = j
             continue
 
         # headings
-        m = re.match(r"^(#{1,3})\s+(.*)$", line)
+        m = re.match(r"^(#{1,6})\s+(.*)$", line)
         if m:
             level = len(m.group(1))
-            txt = m.group(2)
-            # basic escaping for reportlab Paragraph
-            txt = (
-                txt.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-            )
-            story.append(Paragraph(txt, {1: h1, 2: h2, 3: h3}[level]))
+            txt = _inline_md_to_rl(m.group(2).strip())
+            story.append(Paragraph(txt, heading_styles.get(level, heading_styles[3])))
+            i += 1
+            continue
+
+        # blockquote
+        if line.lstrip().startswith(">"):
+            txt = line.lstrip()[1:].lstrip()
+            story.append(Paragraph(_inline_md_to_rl(txt), quote))
+            i += 1
             continue
 
         # bullets
         m = re.match(r"^\s*[-*]\s+(.*)$", line)
         if m:
-            txt = m.group(1)
-            txt = (
-                txt.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-            )
+            txt = _inline_md_to_rl(m.group(1).strip())
             story.append(Paragraph(f"• {txt}", bullet))
+            i += 1
             continue
 
         # horizontal rule
         if line.strip() in {"---", "***"}:
             story.append(Spacer(1, 6))
+            i += 1
             continue
 
         # normal paragraph
-        txt = line
-        txt = (
-            txt.replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-        )
-        story.append(Paragraph(txt, body))
+        story.append(Paragraph(_inline_md_to_rl(line.strip()), body))
+        i += 1
 
     if in_code:
         flush_code()
