@@ -56,6 +56,6 @@ window.SUN_DATA = {
   sources: [
     'Australian Cancer Incidence and Mortality (data.gov.au / AIHW)',
     '2021 SoE Climate Annual mean temperature anomaly Australia (1910 to 2020) via data.gov.au',
-    'Live UV data: Open-Meteo current forecast API'
+    'Live UV data: OpenWeather One Call 3.0 via serverless backend proxy'
   ]
 };

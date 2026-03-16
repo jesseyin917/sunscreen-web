@@ -78,17 +78,20 @@ function renderUvCard(uv, locationLabel) {
   updateClothing(level.key);
 }
 
-async function fetchUv(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=uv_index&timezone=auto`;
+async function fetchUv(lat, lon, label) {
+  const url = `/api/uv?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}${label ? `&label=${encodeURIComponent(label)}` : ''}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error('Failed to fetch UV data');
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Failed to fetch UV data from backend proxy: ${errText}`);
+  }
   const data = await res.json();
-  return data.current?.uv_index ?? 0;
+  return data.uvi ?? 0;
 }
 
 async function loadUvFor(lat, lon, label) {
   $('uvAlert').textContent = 'Fetching live UV data…';
-  const uv = await fetchUv(lat, lon);
+  const uv = await fetchUv(lat, lon, label);
   renderUvCard(uv, label || `Live reading near ${lat.toFixed(2)}, ${lon.toFixed(2)}`);
 }
 
@@ -103,7 +106,7 @@ async function useMyLocation() {
       const { latitude, longitude } = position.coords;
       await loadUvFor(latitude, longitude, `Your location (${latitude.toFixed(2)}, ${longitude.toFixed(2)})`);
     } catch (error) {
-      $('uvAlert').textContent = 'Could not load live UV right now. Try a quick city button instead.';
+      $('uvAlert').textContent = 'Could not load live UV right now. If this is the GitHub Pages link, use the Vercel deployment because the secure backend proxy lives there.';
       console.error(error);
     }
   }, async () => {
