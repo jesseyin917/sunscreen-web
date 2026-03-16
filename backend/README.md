@@ -8,6 +8,7 @@ This backend mirrors the reference project structure: a frontend plus a separate
 python3 -m venv backend/.venv
 source backend/.venv/bin/activate
 python -m pip install -r backend/requirements.txt
+export OPENWEATHER_API_KEY=your_key_here
 python -m uvicorn app.main:app --reload --app-dir backend
 ```
 
@@ -19,5 +20,6 @@ python -m uvicorn app.main:app --reload --app-dir backend
 
 ## Notes
 
-- This backend uses Open-Meteo as the upstream weather/UV API.
+- This backend uses OpenWeather One Call 3.0 for live UV retrieval.
 - The frontend should call this backend instead of the third-party API directly.
+- Keep the API key in an environment variable, not in frontend code.

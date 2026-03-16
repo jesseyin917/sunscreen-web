@@ -42,6 +42,7 @@ Then open:
 ### Backend (Render)
 
 This repo includes `render.yaml` for the FastAPI backend. Deploy the backend first and copy the public backend URL.
+Set the environment variable `OPENWEATHER_API_KEY` in Render before using the UV endpoint.
 
 ### Frontend
 
@@ -59,4 +60,4 @@ Then deploy the frontend statically (GitHub Pages / Netlify / Vercel static host
 
 - Australian Cancer Incidence and Mortality (data.gov.au / AIHW)
 - 2021 SoE Climate Annual mean temperature anomaly Australia (1910 to 2020)
-- Open-Meteo live UV via backend API
+- OpenWeather One Call 3.0 live UV via backend API

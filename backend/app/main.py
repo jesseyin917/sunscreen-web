@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import httpx
@@ -6,8 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="SunSmart AU Backend",
-    version="0.2.0",
-    description="FastAPI backend for UV retrieval and suburb/postcode lookup using Open-Meteo.",
+    version="0.3.0",
+    description="FastAPI backend for UV retrieval and suburb/postcode lookup using OpenWeather + geocoding.",
 )
 
 app.add_middleware(
@@ -114,12 +115,17 @@ async def get_current_uv(
     if lat is None or lon is None:
         raise HTTPException(status_code=400, detail="Provide lat/lon or q (suburb/postcode)")
 
-    url = "https://api.open-meteo.com/v1/forecast"
+    api_key = os.getenv("OPENWEATHER_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="Missing OPENWEATHER_API_KEY environment variable")
+
+    url = "https://api.openweathermap.org/data/3.0/onecall"
     params = {
-        "latitude": lat,
-        "longitude": lon,
-        "current": "uv_index",
-        "timezone": "auto",
+        "lat": lat,
+        "lon": lon,
+        "units": "metric",
+        "exclude": "minutely,hourly,daily,alerts",
+        "appid": api_key,
     }
 
     try:
@@ -132,7 +138,7 @@ async def get_current_uv(
     if response.status_code >= 400:
         raise HTTPException(status_code=response.status_code, detail=data)
 
-    uvi = data.get("current", {}).get("uv_index")
+    uvi = data.get("current", {}).get("uvi")
     if uvi is None:
         raise HTTPException(status_code=502, detail="UV data missing in upstream response")
 
@@ -142,6 +148,6 @@ async def get_current_uv(
         "lon": lon,
         "uvIndex": uvi,
         "risk": uv_risk_label(float(uvi)),
-        "message": "Live response from FastAPI backend using Open-Meteo.",
-        "source": "Open-Meteo via FastAPI backend",
+        "message": "Live response from FastAPI backend using OpenWeather.",
+        "source": "OpenWeather One Call 3.0 via FastAPI backend",
     }
