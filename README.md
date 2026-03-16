@@ -18,7 +18,6 @@ Youth campaign style sunscreen-awareness web project with:
 python3 -m venv backend/.venv
 source backend/.venv/bin/activate
 python -m pip install -r backend/requirements.txt
-export OPENWEATHER_API_KEY=your_key_here
 python -m uvicorn app.main:app --reload --app-dir backend
 ```
 
@@ -42,4 +41,4 @@ Then open:
 
 - Australian Cancer Incidence and Mortality (data.gov.au / AIHW)
 - 2021 SoE Climate Annual mean temperature anomaly Australia (1910 to 2020)
-- OpenWeather live UV via backend API
+- Open-Meteo live UV via backend API
