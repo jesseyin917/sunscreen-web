@@ -88,6 +88,28 @@ body {
   margin-top: 22px;
 }
 
+.search-strip {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.search-input {
+  width: 100%;
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  padding: 15px 18px;
+  font: inherit;
+  background: #fff;
+  color: var(--ink);
+}
+
+.search-input::placeholder {
+  color: #6b7280;
+}
+
 .primary-btn, .ghost-btn, .city-btn {
   appearance: none;
   border: 2px solid var(--line);
@@ -292,7 +314,7 @@ canvas {
 .callout-card { background: #ffd2ea; }
 
 @media (max-width: 960px) {
-  .hero, .uv-layout, .chart-grid, .clothing-grid {
+  .hero, .uv-layout, .chart-grid, .clothing-grid, .search-strip {
     grid-template-columns: 1fr;
   }
 

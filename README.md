@@ -2,7 +2,7 @@
 
 Youth campaign style sunscreen-awareness web project with:
 
-- **US1.1** Real-time, localised UV alert via a **FastAPI backend**
+- **US1.1** Localised UV alert via a **FastAPI backend**, supporting suburb/postcode search and current location
 - **US2.1** Two visualisations using real Australian public datasets
 - **US3.3** UV-based clothing recommendations
 
