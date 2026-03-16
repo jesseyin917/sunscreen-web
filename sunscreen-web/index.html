@@ -3,130 +3,185 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SunSmart AU</title>
+    <title>SunSmart AU — Youth Sun Safety</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <div class="page-noise"></div>
     <div class="app-shell">
       <header class="hero">
-        <div>
-          <p class="eyebrow">SunSmart AU</p>
-          <h1>Know the UV. Understand the risk. Dress smarter.</h1>
+        <div class="hero-copy-wrap">
+          <span class="campaign-tag">Youth campaign style demo</span>
+          <h1>Beat the burn before the burn beats you.</h1>
           <p class="hero-copy">
-            A youth-focused sunscreen awareness webpage for Australia: real-time local UV alerts,
-            visual evidence of skin cancer impact and heat trends, and practical clothing guidance.
+            A youth-focused sun safety website for Australia that translates live UV data into action,
+            shows why UV matters through real visualisations, and helps young adults choose the right clothing.
           </p>
+          <div class="hero-actions">
+            <button id="locateBtn" class="primary-btn">Check my live UV</button>
+            <a href="#insight-zone" class="ghost-btn">See why it matters</a>
+          </div>
         </div>
-        <div class="hero-card glass">
-          <p class="mini-label">Project goals</p>
-          <ul>
-            <li>Real-time UV alert by location</li>
-            <li>Visualise why sun protection matters</li>
-            <li>Recommend what to wear for current conditions</li>
-          </ul>
-        </div>
+
+        <aside class="hero-sidekick">
+          <div class="sticker-card yellow-card">
+            <span class="sticker-label">US1.1</span>
+            <h3>Live UV alert</h3>
+            <p>Real-time, localised UV level with colour-coded risk and a human-language warning.</p>
+          </div>
+          <div class="sticker-card pink-card">
+            <span class="sticker-label">US2.1</span>
+            <h3>2 visualisations</h3>
+            <p>Skin cancer impact and Australia's heat trend to raise awareness visually.</p>
+          </div>
+          <div class="sticker-card blue-card">
+            <span class="sticker-label">US3.3</span>
+            <h3>Smart outfit picks</h3>
+            <p>Clothing suggestions that adapt to UV so users can stay protected outdoors.</p>
+          </div>
+        </aside>
       </header>
 
       <main>
-        <section class="panel glass" id="uv-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="section-tag">US1.1</p>
-              <h2>Real-time, localised UV alert</h2>
-              <p>Turns the UV index into plain-English guidance instead of just showing a number.</p>
-            </div>
-            <button id="locateBtn" class="primary-btn">Use my location</button>
+        <section class="mega-panel uv-panel" id="uv-zone">
+          <div class="section-intro">
+            <span class="section-kicker">US1.1 · Must Have</span>
+            <h2>Real-time, localised UV alerts</h2>
+            <p>
+              This feature does not just show a number. It turns UV into a warning young adults can act on immediately.
+            </p>
           </div>
 
-          <div class="uv-grid">
-            <div class="uv-status-card">
-              <div class="uv-value-wrap">
+          <div class="uv-layout">
+            <article class="uv-main-card">
+              <div class="uv-topline">
                 <span class="mini-label">Current UV</span>
-                <div class="uv-value-row">
-                  <span id="uvValue" class="uv-value">--</span>
-                  <span id="uvBadge" class="uv-badge neutral">Waiting</span>
+                <span id="uvBadge" class="uv-badge neutral">Waiting</span>
+              </div>
+              <div class="uv-reading-row">
+                <span id="uvValue" class="uv-value">--</span>
+                <div class="uv-reading-copy">
+                  <p id="uvLocation" class="location-text">Loading Melbourne by default…</p>
+                  <p id="uvAlert" class="alert-text">Checking live UV data now.</p>
                 </div>
               </div>
-              <p id="uvLocation" class="location-text">Location not loaded yet</p>
-              <p id="uvAlert" class="alert-text">Tap “Use my location” to fetch live UV and get a human-language warning.</p>
-            </div>
+            </article>
 
-            <div class="info-stack">
-              <div class="info-card">
-                <span class="mini-label">Protection window</span>
+            <div class="decision-grid">
+              <article class="decision-card">
+                <span class="mini-label">Time to protect</span>
                 <p id="exposureText">Estimated safe exposure time will appear here.</p>
-              </div>
-              <div class="info-card">
-                <span class="mini-label">Right now</span>
-                <p id="actionText">We’ll suggest immediate next actions once the UV data loads.</p>
-              </div>
+              </article>
+              <article class="decision-card">
+                <span class="mini-label">What to do now</span>
+                <p id="actionText">Next-step advice will appear here.</p>
+              </article>
+              <article class="decision-card highlight-card">
+                <span class="mini-label">Quick reminder</span>
+                <p>UV 3+ means protection matters. A cool day can still have dangerous UV.</p>
+              </article>
+              <article class="decision-card city-card">
+                <span class="mini-label">Quick city demo</span>
+                <div class="city-buttons">
+                  <button class="city-btn" data-lat="-37.8136" data-lon="144.9631" data-label="Melbourne">Melbourne</button>
+                  <button class="city-btn" data-lat="-33.8688" data-lon="151.2093" data-label="Sydney">Sydney</button>
+                  <button class="city-btn" data-lat="-27.4698" data-lon="153.0251" data-label="Brisbane">Brisbane</button>
+                  <button class="city-btn" data-lat="-31.9505" data-lon="115.8605" data-label="Perth">Perth</button>
+                </div>
+              </article>
             </div>
           </div>
         </section>
 
-        <section class="panel glass" id="insights-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="section-tag">US2.1</p>
-              <h2>Why this matters in Australia</h2>
-              <p>Two lightweight visualisations to raise awareness instead of just giving instructions.</p>
-            </div>
+        <section class="mega-panel" id="insight-zone">
+          <div class="section-intro">
+            <span class="section-kicker">US2.1 · Must Have</span>
+            <h2>Understand Australia's UV impact visually</h2>
+            <p>
+              Instead of just telling people what to do, this section shows the why through two visualisations.
+            </p>
+          </div>
+
+          <div class="facts-strip">
+            <div class="fact-pill">See the long-term impact of skin cancer</div>
+            <div class="fact-pill">See Australia's heat trend over time</div>
+            <div class="fact-pill">Help young adults explain the risk to friends</div>
           </div>
 
           <div class="chart-grid">
-            <article class="chart-card">
+            <article class="chart-card chart-card-red">
               <div class="chart-copy">
-                <h3>Melanoma incidence vs mortality in Australia</h3>
+                <span class="chart-tag">Visualisation 01</span>
+                <h3>Skin cancer impact in Australia</h3>
                 <p>
-                  Real data from the Australian Cancer Incidence and Mortality dataset. It shows how common melanoma became over time and why prevention matters.
+                  Real melanoma incidence and mortality data shows why prevention matters long before someone feels sun damage.
                 </p>
+                <p class="takeaway">Takeaway: skin cancer is not abstract — the burden has been substantial for decades.</p>
               </div>
-              <canvas id="cancerChart" height="240"></canvas>
+              <canvas id="cancerChart" height="250"></canvas>
             </article>
 
-            <article class="chart-card">
+            <article class="chart-card chart-card-orange">
               <div class="chart-copy">
-                <h3>Sun behaviour by age group</h3>
+                <span class="chart-tag">Visualisation 02</span>
+                <h3>Heat trend in Australia</h3>
                 <p>
-                  Real ABS data comparing daily SPF30+ sunscreen use with recent sunburn. This makes the behaviour gap visible, especially for younger people.
+                  Rising temperature anomalies reinforce the climate context around outdoor exposure and sun safety pressure.
                 </p>
+                <p class="takeaway">Takeaway: hotter years strengthen the need for practical, everyday protection habits.</p>
               </div>
-              <canvas id="heatChart" height="240"></canvas>
+              <canvas id="heatChart" height="250"></canvas>
             </article>
           </div>
 
-          <div class="dataset-note">
-            <strong>Live / real data sources used in this page:</strong>
+          <div class="source-box">
+            <strong>Data sources used</strong>
             <ul id="sourceList"></ul>
           </div>
         </section>
 
-        <section class="panel glass" id="clothing-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="section-tag">US3.3</p>
-              <h2>What should I wear?</h2>
-              <p>Clothing recommendations adapt to the current UV level so the advice feels useful, not generic.</p>
-            </div>
+        <section class="mega-panel clothing-panel" id="wear-zone">
+          <div class="section-intro">
+            <span class="section-kicker">US3.3 · Must Have</span>
+            <h2>Select the right clothing for the UV level</h2>
+            <p>
+              Depending on the UV index, users get outfit guidance that balances comfort, coverage, and practical protection.
+            </p>
           </div>
 
-          <div class="clothing-layout">
-            <div class="outfit-card">
-              <h3 id="outfitTitle">Everyday sun-smart outfit</h3>
+          <div class="clothing-grid">
+            <article class="outfit-card statement-card">
+              <span class="mini-label">Recommended outfit</span>
+              <h3 id="outfitTitle">Sun-smart outfit guide</h3>
               <ul id="outfitList" class="outfit-list"></ul>
-            </div>
-            <div class="tips-card">
-              <h3>Quick rules</h3>
+            </article>
+
+            <article class="outfit-card">
+              <span class="mini-label">Pick better materials</span>
               <ul class="tips-list">
-                <li>UPF-rated or tightly woven fabrics block more UV than thin cotton.</li>
-                <li>Long sleeves help, but colour, weave, and fit matter too.</li>
-                <li>A hat that shades the face, ears, and neck is much better than a cap.</li>
-                <li>Sunglasses and sunscreen should complement clothing, not replace it.</li>
+                <li>Tightly woven fabrics block more UV than thin or see-through materials.</li>
+                <li>UPF-rated clothing is ideal when outdoor exposure is long.</li>
+                <li>Loose, breathable long sleeves can still feel cool while improving coverage.</li>
               </ul>
-            </div>
+            </article>
+
+            <article class="outfit-card">
+              <span class="mini-label">Do not rely on this alone</span>
+              <ul class="tips-list">
+                <li>A cap is weaker than a wide-brim hat because ears and neck stay exposed.</li>
+                <li>Sunscreen should support clothing, not replace it.</li>
+                <li>Sunglasses matter too — eye comfort is part of sun safety.</li>
+              </ul>
+            </article>
+
+            <article class="outfit-card callout-card">
+              <span class="mini-label">Campaign message</span>
+              <h3>Hot fit. Smart fit.</h3>
+              <p>Good sun protection does not have to look clinical. The goal is to make safer choices feel normal, wearable, and social.</p>
+            </article>
           </div>
         </section>
       </main>
