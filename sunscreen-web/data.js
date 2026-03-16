@@ -12,16 +12,16 @@ window.SUN_DATA = {
     { year: 2010, incidence: 11404, mortality: 1432 }
   ],
   heatTrend: [
-    { year: 2015, anomaly: 0.83 },
-    { year: 2016, anomaly: 1.10 },
-    { year: 2017, anomaly: 0.95 },
-    { year: 2018, anomaly: 1.14 },
+    { year: 2011, anomaly: 0.0 },
+    { year: 2012, anomaly: 0.24 },
+    { year: 2013, anomaly: 1.33 },
+    { year: 2014, anomaly: 1.04 },
+    { year: 2015, anomaly: 0.94 },
+    { year: 2016, anomaly: 0.99 },
+    { year: 2017, anomaly: 1.06 },
+    { year: 2018, anomaly: 1.12 },
     { year: 2019, anomaly: 1.52 },
-    { year: 2020, anomaly: 1.15 },
-    { year: 2021, anomaly: 0.73 },
-    { year: 2022, anomaly: 0.50 },
-    { year: 2023, anomaly: 1.14 },
-    { year: 2024, anomaly: 1.46 }
+    { year: 2020, anomaly: 1.15 }
   ],
   clothingByLevel: {
     low: [
@@ -55,7 +55,7 @@ window.SUN_DATA = {
   },
   sources: [
     'Australian Cancer Incidence and Mortality (data.gov.au / AIHW)',
-    'Australian annual temperature anomaly trend (compiled from public climate reporting for demo visualisation)',
+    '2021 SoE Climate Annual mean temperature anomaly Australia (1910 to 2020) via data.gov.au',
     'Live UV data: Open-Meteo current forecast API'
   ]
 };
