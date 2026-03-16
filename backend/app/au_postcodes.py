@@ -240,7 +240,7 @@ def _parse_values_payload(payload: str) -> Iterator[AuPlace]:
                 pass
 
         # Move forward to next tuple; tolerate trailing commas
-        while i < n and payload[i] not in "(;"):
+        while i < n and payload[i] not in "(;":
             if payload[i] == "(":
                 break
             i += 1
