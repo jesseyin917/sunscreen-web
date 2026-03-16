@@ -39,8 +39,8 @@
           </div>
           <div class="sticker-card blue-card">
             <span class="sticker-label">US3.3</span>
-            <h3>Smart outfit picks</h3>
-            <p>Clothing suggestions that adapt to UV so users can stay protected outdoors.</p>
+            <h3>Dynamic outfit advice</h3>
+            <p>The clothing section now changes with the live UV result, not just the number.</p>
           </div>
         </aside>
       </header>
@@ -153,39 +153,33 @@
             <span class="section-kicker">US3.3 · Must Have</span>
             <h2>Select the right clothing for the UV level</h2>
             <p>
-              Depending on the UV index, users get outfit guidance that balances comfort, coverage, and practical protection.
+              The full recommendation panel now adapts to the current UV risk, including outfit, accessories, urgency, and protective emphasis.
             </p>
           </div>
 
-          <div class="clothing-grid">
-            <article class="outfit-card statement-card">
+          <div id="clothingGrid" class="clothing-grid clothing-theme-moderate">
+            <article id="dynamicOutfitCard" class="outfit-card statement-card">
               <span class="mini-label">Recommended outfit</span>
               <h3 id="outfitTitle">Sun-smart outfit guide</h3>
+              <p id="outfitHeadline" class="dynamic-copy">Dynamic advice will appear here.</p>
               <ul id="outfitList" class="outfit-list"></ul>
             </article>
 
             <article class="outfit-card">
-              <span class="mini-label">Pick better materials</span>
-              <ul class="tips-list">
-                <li>Tightly woven fabrics block more UV than thin or see-through materials.</li>
-                <li>UPF-rated clothing is ideal when outdoor exposure is long.</li>
-                <li>Loose, breathable long sleeves can still feel cool while improving coverage.</li>
-              </ul>
+              <span class="mini-label">Materials & coverage</span>
+              <ul id="materialsList" class="tips-list"></ul>
             </article>
 
             <article class="outfit-card">
-              <span class="mini-label">Do not rely on this alone</span>
-              <ul class="tips-list">
-                <li>A cap is weaker than a wide-brim hat because ears and neck stay exposed.</li>
-                <li>Sunscreen should support clothing, not replace it.</li>
-                <li>Sunglasses matter too — eye comfort is part of sun safety.</li>
-              </ul>
+              <span class="mini-label">Accessories & action</span>
+              <ul id="accessoriesList" class="tips-list"></ul>
+              <p id="cautionText" class="dynamic-copy"></p>
             </article>
 
-            <article class="outfit-card callout-card">
+            <article id="campaignCard" class="outfit-card callout-card">
               <span class="mini-label">Campaign message</span>
-              <h3>Hot fit. Smart fit.</h3>
-              <p>Good sun protection does not have to look clinical. The goal is to make safer choices feel normal, wearable, and social.</p>
+              <h3 id="campaignTitle">Hot fit. Smart fit.</h3>
+              <p id="campaignText">The current UV level will customise this message.</p>
             </article>
           </div>
         </section>

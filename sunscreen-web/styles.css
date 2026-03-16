@@ -310,8 +310,22 @@ canvas {
 .clothing-grid {
   margin-top: 20px;
 }
+.dynamic-copy {
+  color: var(--muted);
+  line-height: 1.6;
+}
 .statement-card { background: #ffe6a9; }
 .callout-card { background: #ffd2ea; }
+.clothing-theme-low .statement-card { background: #dcfce7; }
+.clothing-theme-low .callout-card { background: #d1fae5; }
+.clothing-theme-moderate .statement-card { background: #fff3b0; }
+.clothing-theme-moderate .callout-card { background: #ffe4a3; }
+.clothing-theme-high .statement-card { background: #fed7aa; }
+.clothing-theme-high .callout-card { background: #fdba74; }
+.clothing-theme-very-high .statement-card { background: #fecaca; }
+.clothing-theme-very-high .callout-card { background: #fda4af; }
+.clothing-theme-extreme .statement-card { background: #ddd6fe; }
+.clothing-theme-extreme .callout-card { background: #c4b5fd; }
 
 @media (max-width: 960px) {
   .hero, .uv-layout, .chart-grid, .clothing-grid, .search-strip {

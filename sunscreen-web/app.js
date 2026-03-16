@@ -41,28 +41,46 @@ function buildHumanAlert(uv, level) {
 
 function buildActionText(level) {
   const actions = {
-    low: 'Okay for short outdoor trips. If you will stay out longer, prep sunscreen and sunglasses first.',
-    moderate: 'Good time to add sunscreen, sunglasses, and a hat before walking outside.',
-    high: 'Move outdoor plans earlier or later if you can. Shade + SPF 50+ + protective clothing together.',
-    'very-high': 'This is serious Australian sun. Dress for protection, not just comfort.',
-    extreme: 'Treat this like a hazard, not just weather. Keep direct sun exposure short and fully protected.'
+    low: 'Short outdoor trips are usually fine. For longer time outside, prep sunscreen and sunglasses first.',
+    moderate: 'Now is the time to add sunscreen, sunglasses, and a hat before staying outdoors.',
+    high: 'Plan for shade, long sleeves, and SPF 50+ together rather than treating them separately.',
+    'very-high': 'This level needs active protection — clothing, accessories, and reduced direct exposure all matter.',
+    extreme: 'Treat this as a hazard. Minimise direct exposure and use maximum practical protection.'
   };
   return actions[level.key];
 }
 
-function updateClothing(levelKey) {
-  const list = $('outfitList');
+function renderList(targetId, items) {
+  const list = $(targetId);
   list.innerHTML = '';
-  const items = window.SUN_DATA.clothingByLevel[levelKey] || window.SUN_DATA.clothingByLevel.low;
-  items.forEach((item) => {
+  (items || []).forEach((item) => {
     const li = document.createElement('li');
     li.textContent = item;
     list.appendChild(li);
   });
-  $('outfitTitle').textContent = `Best clothing pick for ${levelKey.replace('-', ' ')} UV`;
 }
 
-function renderUvCard(uv, locationLabel) {
+function updateDynamicClothing(payload, levelKey) {
+  const clothing = payload?.clothing;
+  if (!clothing) return;
+
+  $('outfitTitle').textContent = clothing.outfitTitle;
+  $('outfitHeadline').textContent = clothing.headline;
+  $('campaignTitle').textContent = clothing.campaign;
+  $('campaignText').textContent = clothing.caution;
+  $('cautionText').textContent = clothing.caution;
+
+  renderList('outfitList', clothing.outfitItems);
+  renderList('materialsList', clothing.materials);
+  renderList('accessoriesList', clothing.accessories);
+
+  const grid = $('clothingGrid');
+  grid.className = `clothing-grid clothing-theme-${clothing.theme || levelKey}`;
+}
+
+function renderUvCard(payload) {
+  const uv = payload.uvIndex;
+  const locationLabel = payload.location;
   const level = getLevel(uv);
   state.uv = uv;
   state.level = level.key;
@@ -75,7 +93,7 @@ function renderUvCard(uv, locationLabel) {
   $('uvAlert').textContent = buildHumanAlert(uv, level);
   $('exposureText').textContent = `Estimated unprotected exposure time: around ${estimateMinutes(uv)} minutes in peak conditions for fair-to-medium skin.`;
   $('actionText').textContent = buildActionText(level);
-  updateClothing(level.key);
+  updateDynamicClothing(payload, level.key);
 }
 
 const CONFIG_API_BASE = window.APP_CONFIG?.apiBase?.trim?.() || '';
@@ -102,7 +120,7 @@ async function fetchUvByQuery(query) {
 async function loadUvFor(lat, lon, label) {
   $('uvAlert').textContent = 'Fetching live UV data…';
   const data = await fetchUvByCoords(lat, lon, label);
-  renderUvCard(data.uvIndex ?? 0, data.location || label);
+  renderUvCard(data);
 }
 
 async function searchUv() {
@@ -115,7 +133,7 @@ async function searchUv() {
   $('uvAlert').textContent = 'Searching suburb/postcode…';
   try {
     const data = await fetchUvByQuery(query);
-    renderUvCard(data.uvIndex ?? 0, data.location || query);
+    renderUvCard(data);
   } catch (error) {
     $('uvAlert').textContent = 'Could not find UV data for that suburb or postcode.';
     console.error(error);
@@ -280,7 +298,6 @@ function boot() {
   drawMelanomaChart();
   drawHeatChart();
   renderSources();
-  updateClothing(state.level === 'neutral' ? 'moderate' : state.level);
   bindEvents();
 }
 
@@ -289,7 +306,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   boot();
   try {
     const data = await fetchUvByQuery('Melbourne');
-    renderUvCard(data.uvIndex ?? 0, data.location || 'Melbourne');
+    renderUvCard(data);
   } catch (error) {
     console.error(error);
   }
